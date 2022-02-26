@@ -21,9 +21,13 @@ axios("https://api.coingecko.com/api/v3/simple/price?ids=banano&vs_currencies=us
     banusd = res.data["banano"]["usd"];
 });
 setInterval(() => {
-    axios("https://api.coingecko.com/api/v3/simple/price?ids=banano&vs_currencies=usd").then(res => {
-        banusd = res.data["banano"]["usd"];
-    });
+    try {
+        axios("https://api.coingecko.com/api/v3/simple/price?ids=banano&vs_currencies=usd").then(res => {
+            banusd = res.data["banano"]["usd"];
+        });
+    } catch(err) {
+        console.error(err);
+    };
 }, 60000);
 
 bananojs.bananodeApi.setUrl(process.env["HTTP_NODE"]);
@@ -270,7 +274,7 @@ app.use(function (req, res, next) {
 })
 
 app.use(function (err, req, res, next) {
-    console.error(err.stack)
+    console.error(err.stack);
 })
 
 app.listen(port, () => {
