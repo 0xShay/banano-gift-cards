@@ -1,0 +1,10 @@
+{
+	"WORTHLESS_CARD": {
+		"name": "Worthless Card",
+		"price_usd": 0.01,
+		"stock": [
+			"b35",
+			"c46"
+		]
+	}
+}

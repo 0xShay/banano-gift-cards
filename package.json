@@ -1,0 +1,20 @@
+{
+  "name": "banano-gift-cards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@bananocoin/bananojs": "^2.5.3",
+    "axios": "^0.26.0",
+    "bananojs": "github:0xShay/bananojs",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "node-mailjet": "^3.3.7",
+    "simplest.db": "^1.0.1-2"
+  }
+}
