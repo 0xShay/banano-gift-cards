@@ -6,6 +6,7 @@ const Database = require("simplest.db");
 const bananojs = require("bananojs");
 const http = require("http");
 const https = require("https");
+const fs = require("fs");
 
 const bananoTools = require("./utils/bananoTools.js");
 const sendEmail = require("./utils/sendEmail.js");
