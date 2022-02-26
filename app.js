@@ -4,6 +4,8 @@ const express = require("express");
 const axios = require("axios");
 const Database = require("simplest.db");
 const bananojs = require("bananojs");
+const http = require("http");
+const https = require("https");
 
 const bananoTools = require("./utils/bananoTools.js");
 const sendEmail = require("./utils/sendEmail.js");
@@ -38,6 +40,19 @@ const port = process.env.PORT || 8080;
 app.enable("trust proxy");
 app.use(express.static(__dirname + "/public"));
 app.set(`view engine`, `ejs`)
+
+if (process.env.USE_SSL == "true") {
+    const privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, `utf8`);
+    const certificate = fs.readFileSync(process.env.SSL_CRT_PATH, `utf8`);
+    const credentials = {
+        key: privateKey,
+        cert: certificate
+    };
+    let httpServer = http.createServer(app);
+    let httpsServer = https.createServer(credentials, app);
+    httpServer.listen(8080)
+    httpsServer.listen(443)
+}
 
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
