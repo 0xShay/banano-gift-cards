@@ -2,3 +2,7 @@
 .env
 
 node_modules/
+
+stock.json
+invoices.json
+*.json

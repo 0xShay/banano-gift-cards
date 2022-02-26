@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BananoPlanet.cc</title>
+
+        <link rel="stylesheet" href="/style.css">
+
+    </head>
+    
+    <body>
+
+        <h1>Buy gift cards with Banano!</h1>
+
+        <h2>Click on a product to proceed.</h2>
+
+        <ul id="productList"></ul>
+        
+        <script>
+            let productList = JSON.parse(`<%- productList %>`);
+            Object.keys(productList).forEach(p => {
+                if (productList[p]["stock"] > 0) {
+                    document.getElementById("productList").innerHTML += `<a href="/info/${p}">${productList[p]["name"]}</a><br>`;
+                };
+            });
+        </script>
+
+    </body>
+
+</html>

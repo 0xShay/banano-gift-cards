@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BananoPlanet.cc</title>
+
+        <link rel="stylesheet" href="/style.css">
+
+    </head>
+    
+    <body>
+
+        <h1>Buy gift cards with Banano!</h1>
+
+        <h2 id="subheading">...</h2>
+
+        <div class="orderInfo" id="orderInfo">
+            <h2 id="timer" style="display: none;">...</h2>
+            <h2 id="userMessage">...</h2>
+            <img id="qrcode" style="display: none; margin-left: auto; margin-right: auto;">
+            <code id="paymentAddress" style="display: none; margin-top: 1vw; font-size: 1.5vw;"></code>
+        </div>
+
+        <br>
+
+        <p>If you need any further support, join the BananoPlanet Discord at bananoplanet.cc/discord</p>
+
+        <script src="/qrcode.js"></script>
+        <script src="/index.js"></script>
+        <script>
+
+            let orderInfo = JSON.parse(`<%- orderInfo %>`);
+            console.log(orderInfo);
+            document.getElementById("subheading").innerText = `Order #${orderInfo["order_id"]}`;
+
+            function updateCountdown() {
+                let duration = orderInfo["expiry"] - Date.now();
+                if (duration <= 0) location.reload();
+                seconds = parseInt((duration/1000)%60);
+                minutes = parseInt((duration/(60000))%60);
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                seconds = (seconds < 10) ? "0" + seconds : seconds;
+                document.getElementById("timer").innerText = `${minutes}:${seconds}`;
+                setTimeout(updateCountdown, 1000);
+            };
+
+            switch (orderInfo["status"]) {
+                case "OUTSTANDING":
+                    document.getElementById("timer").style.display = "inherit";
+                    document.getElementById("userMessage").innerHTML = `Send <u>${orderInfo["value"]} BAN</u> to the address below before the timer runs out and your product will be emailed to you.`;
+                    document.getElementById("qrcode").style.display = "inherit";
+                    document.getElementById("qrcode").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${orderInfo["payment_address"]}`;
+                    document.getElementById("paymentAddress").style.display = "inherit";
+                    document.getElementById("paymentAddress").innerText = orderInfo["payment_address"];
+                    setInterval(window.location.reload.bind(window.location), 30000);
+                    updateCountdown();
+                    break;
+                case "DELIVERED":
+                    document.getElementById("userMessage").innerText = `Funds have been received. You should have recieved your product via email - if not, join our Discord at bananoplanet.cc/discord`;
+                    break;
+                case "PAID":
+                    document.getElementById("userMessage").innerText = `Funds have been received but there was an issue delievering the product to your email address - join our Discord at bananoplanet.cc/discord`;
+                    break;
+                case "EXPIRED":
+                    document.getElementById("userMessage").innerText = `The time for this order expired. Feel free to place another order when you're ready!`;
+                    break;
+            };
+
+        </script>
+
+    </body>
+
+</html>

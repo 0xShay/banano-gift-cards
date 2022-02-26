@@ -1,10 +1,8 @@
 {
-	"WORTHLESS_CARD": {
-		"name": "Worthless Card",
-		"price_usd": 0.01,
-		"stock": [
-			"b35",
-			"c46"
-		]
+	"steam-card-5-usd": {
+		"name": "$5 Steam Gift Card",
+		"price_usd": 0.1,
+		"thumbnail": "https://imgur.com/sk4xIX8.png",
+		"stock": []
 	}
 }

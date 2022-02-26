@@ -33,6 +33,7 @@ const port = process.env.PORT || 8080;
 
 app.enable("trust proxy");
 app.use(express.static(__dirname + "/public"));
+app.set(`view engine`, `ejs`)
 
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
@@ -54,6 +55,52 @@ app.use((err, req, res, next) => {
             "message": "Internal server error"
         });
     } else { next() };
+})
+
+app.get(`/`, (req, res) => {
+
+    let stockJSON = JSON.parse(stockDB.toJSON());
+    Object.keys(stockJSON).forEach(pID => {
+        stockJSON[pID]["stock"] = stockJSON[pID]["stock"].length;
+        stockJSON[pID]["id"] = pID;
+    });
+
+    res.render("index", {
+        productList: JSON.stringify(stockJSON)
+    });
+
+})
+
+app.get(`/info/:product_id`, (req, res) => {
+
+    let productInfo = stockDB.get(req.params["product_id"]);
+    if (!productInfo) return res.json({
+        "status": 200,
+        "message": "Product not found"
+    });
+    productInfo["stock"] = productInfo["stock"].length;
+    productInfo["price"] = parseFloat((productInfo["price_usd"] / banusd).toFixed(2));    
+    productInfo["id"] = req.params["product_id"]; 
+    res.render("orderProduct", {
+        productInfo: productInfo
+    });
+
+})
+
+app.get(`/invoice/:order_id`, async (req, res) => {
+
+    let orderInfo = invoicesDB.get(req.params["order_id"].toString());
+    if (!orderInfo) return res.json({
+        "status": 200,
+        "message": "Invoice not found"
+    });
+    orderInfo["private_key"] = undefined;
+    orderInfo["email"] = undefined;
+    orderInfo["return_address"] = undefined;
+    res.render("invoice", {
+        orderInfo: JSON.stringify(orderInfo)
+    });
+
 })
 
 app.post(`/order`, async (req, res) => {
@@ -89,7 +136,7 @@ app.post(`/order`, async (req, res) => {
             value_usd: stockJSON[req.body["product_id"]]["price_usd"],
             value: parseFloat((stockJSON[req.body["product_id"]]["price_usd"] / banusd).toFixed(2)),
             email: req.body["email_address"],
-            expiry: Date.now() + 120000,
+            expiry: Date.now() + 3600000,
             private_key: privkey,
             payment_address: payment_address,
             return_address: req.body["return_address"],
@@ -109,7 +156,7 @@ app.post(`/order`, async (req, res) => {
         const checkForPayment = async () => {
             await bananoTools.receivePending(orderInfo.order_id);
             let paid_balance = await bananoTools.getBalance(payment_address);
-            if (parseFloat(paid_balance["balance_decimal"]) >= orderInfo.value) {
+            if (parseFloat(paid_balance["balance_decimal"]) >= orderInfo.value && stockJSON[req.body["product_id"]]["stock"].length > 0) {
                 
                 // move funds to master wallet
                 await bananoTools.flushBan(paid_balance["balance"], orderID);
@@ -166,7 +213,7 @@ app.post(`/order`, async (req, res) => {
                         console.error(err);
                     };
                 } else {
-                    setTimeout(checkForPayment, 10000);
+                    setTimeout(checkForPayment, 30000);
                 }
             }
         };
@@ -174,6 +221,38 @@ app.post(`/order`, async (req, res) => {
         checkForPayment();
     
     };
+})
+
+app.get(`/product/:product_id`, async (req, res) => {
+
+    let productInfo = stockDB.get(req.params["product_id"]);
+    if (!productInfo) return res.json({
+        "status": 404,
+        "message": "Product not found"
+    });
+    productInfo["stock"] = productInfo["stock"].length;
+    productInfo["price"] = parseFloat((productInfo["price_usd"] / banusd).toFixed(2));
+    productInfo["id"] = req.params["product_id"]; 
+    res.json({
+        "status": 200,
+        "product": productInfo
+    });
+
+})
+
+app.get(`/product_list`, async (req, res) => {
+
+    let stockJSON = JSON.parse(stockDB.toJSON());
+    Object.keys(stockJSON).forEach(pID => {
+        stockJSON[pID]["stock"] = stockJSON[pID]["stock"].length;
+        stockJSON[pID]["id"] = pID;
+    });
+
+    res.json({
+        "status": 200,
+        "product_list": stockJSON
+    });
+
 })
 
 app.all('*', function(req, res, next) {

@@ -17,9 +17,13 @@ async function postData(url = "", data = {}) {
 async function buy(productID) {
     let orderInfo = await postData("/order", {
         "product_id": productID,
-        "return_address": document.getElementById("ban_address").value,
+        "return_address": document.getElementById("return_address").value,
         "email_address": document.getElementById("email_address").value
     });
-    new QRCode(document.getElementById("qrcode"), orderInfo["order"]["payment_address"]);
-    document.getElementById("orderInfo").innerHTML = JSON.stringify(orderInfo, null, "\t");
+    console.log(orderInfo);
+    window.location.href = `/invoice/${orderInfo["order"]["order_id"]}`;
+}
+
+async function generateQR(text) {
+    new QRCode(document.getElementById("qrcode"), text);
 }

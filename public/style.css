@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:wght@200&display=swap');
+
+body {
+    background-color: yellow;
+    font-family: 'Roboto Serif', sans-serif;
+    color: black;
+    text-align: center;
+    padding: 1vw;
+}
+
+p {
+    margin: 0;
+}
+
+input {
+    width: 32vw;
+}
+
+.products {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+}
+
+.products figure {
+    flex: 25%;
+    padding: 0vw;
+}
+
+.products figure img {
+    height: 20vw;
+    border-radius: 1vw;
+}
+
+.products figure figcaption {
+    font-size: 1.5vw;
+}
+
+.orderInfo {
+    background-color: white;
+    padding: 2vw;
+    border: 0.5vw solid black;
+    border-radius: 2vw;
+}
+
+.qrcode-container {
+    text-align: center;
+    width: 128px;
+    height: 128px;
+    margin: 0 auto;
+}

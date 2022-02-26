@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BananoPlanet.cc</title>
+
+        <link rel="stylesheet" href="/style.css">
+
+    </head>
+    
+    <body>
+
+        <h1>Buy gift cards with Banano!</h1>
+
+        <h2><%= productInfo["name"] %></h2>
+
+        <div id="products" class="products">
+            <figure>
+                <img src="<%= productInfo["thumbnail"] %>">
+                <figcaption><%= productInfo["price"].toFixed(2) %> BAN ($<%= productInfo["price_usd"].toFixed(2) %>)</figcaption>
+            </figure>
+        </div>
+
+        <p>Return address (this is where any refunds may be sent)</p>
+        <input type="text" id="return_address" placeholder="ban_3p1anet...">
+        
+        <p style="margin-top: 1vw;">Email (this is where the code will be sent)</p>
+        <input type="email" id="email_address" placeholder="shay@shay.services">
+
+        <br><br>
+
+        <button onclick="buy(`<%= productInfo['id'] %>`)">Place order</button>
+
+        <script src="/index.js"></script>
+        
+    </body>
+
+</html>
